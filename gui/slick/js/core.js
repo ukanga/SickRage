@@ -177,7 +177,7 @@ var SICKRAGE = {
                     $(this).prop('checked', $(bulkCheck).prop('checked'));
                 });
             });
-            
+
             $(".enabler").each(function(){
                 if (!$(this).prop('checked')) { $('#content_'+$(this).attr('id')).hide(); }
             });
@@ -2386,18 +2386,18 @@ var SICKRAGE = {
             .on('shown.bs.popover', function (){
                 $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
             });
-            
-            // Moved and rewritten this from displayShow. This changes the button when clicked for collapsing/expanding the 
+
+            // Moved and rewritten this from displayShow. This changes the button when clicked for collapsing/expanding the
             // Season to Show Episodes or Hide Episodes.
             $(function() {
-            	$('.collapse.toggle').on('hide.bs.collapse', function () {
-            		var reg = /collapseSeason-([0-9]+)/g;
-            		var result = reg.exec(this.id);
+                $('.collapse.toggle').on('hide.bs.collapse', function () {
+                    var reg = /collapseSeason-([0-9]+)/g;
+                    var result = reg.exec(this.id);
                     $('#showseason-' + result[1]).text('Show Episodes');
                 });
                 $('.collapse.toggle').on('show.bs.collapse', function () {
-                	var reg = /collapseSeason-([0-9]+)/g;
-            		var result = reg.exec(this.id);
+                    var reg = /collapseSeason-([0-9]+)/g;
+                    var result = reg.exec(this.id);
                     $('#showseason-' + result[1]).text('Hide Episodes');
                 });
             });
@@ -3223,128 +3223,124 @@ var SICKRAGE = {
             $.initRemoteShowGrid();
         },
         addFromList: function(){
-
-	    	$('#imdbShows').loadRemoteShows(
-    			'/addShows/imdbWatchlist?listid=popular',
+            $('#imdbShows').loadRemoteShows(
+                '/addShows/imdbWatchlist?listid=popular',
                 'Loading imdb shows from list...',
                 'Imdb timed out, refresh page to try again'
             );
 
-			$('#showlist').on('change', function(e) {
-				 var imdbid = e.target.value;
-				 window.history.replaceState({}, document.title, '?listid=' + imdbid);
-				 $('#imdbShows').loadRemoteShows(
-						'/addShows/imdbWatchlist?listid=' + imdbid,
-				         'Loading imdb shows from list...',
-				         'Imdb timed out, refresh page to try again'
-				 );
-			});
-			$.initRemoteShowGrid();
-			
-			/*
-			 * 
-			 */
-			$(document.body).on('click', 'a[data-add-show]', function(e){
+            $('#showlist').on('change', function(e) {
+                 var imdbid = e.target.value;
+                 window.history.replaceState({}, document.title, '?listid=' + imdbid);
+                 $('#imdbShows').loadRemoteShows(
+                        '/addShows/imdbWatchlist?listid=' + imdbid,
+                         'Loading imdb shows from list...',
+                         'Imdb timed out, refresh page to try again'
+                 );
+            });
+            $.initRemoteShowGrid();
+
+            $(document.body).on('click', 'a[data-add-show]', function(e){
                 e.preventDefault();
-                
+
                 var url = $(this).attr('href');
                 var callbackId = $('.show-row[data-callback_id="' + $(this).data('indexer_id') + '"]');
-                
+
                 // Whe're going to add this show, let's remove the anchor and button desc, so it can't be added twice!
-                if ( $(callbackId).find('div.traktShowTitleIcons a').hasClass('disabled') ) { return; }
-                
+                if ($(callbackId).find('div.traktShowTitleIcons a').hasClass('disabled')) {
+                    return;
+                }
+
                 $(callbackId).find('div.traktShowTitleIcons a').html('Being added').addClass('disabled');
-                
+
                 var anyQualArray = [];
-		        var bestQualArray = [];
-		        $('#anyQualities option:selected').each(function (i, d) {
-		            anyQualArray.push($(d).val());
-		        });
-		        $('#bestQualities option:selected').each(function (i, d) {
-		            bestQualArray.push($(d).val());
-		        });
-		        /*jshint camelcase: false */
-                // get paramaters
-		        var root_dir = $("#rootDirs option:selected").val();
-		        var configure_show_options = $('#configure_show_options').prop('checked');
+                var bestQualArray = [];
+                $('#anyQualities option:selected').each(function (i, d) {
+                    anyQualArray.push($(d).val());
+                });
+                $('#bestQualities option:selected').each(function (i, d) {
+                    bestQualArray.push($(d).val());
+                });
+
+                var rootDirectory = $("#rootDirs option:selected").val();
+                var configureShowOptions = $('#configure_show_options').prop('checked');
                 var indexer = $(this).data('indexer');
-                var indexer_id = $(this).data('indexer_id');
-                var show_name = $(this).data('show_name');
-                var default_status = $('#statusSelect').val();
-                var quality_preset = $('#qualityPreset').val();
-                var any_qualities = anyQualArray.join(',');
-                var best_qualities = bestQualArray.join(',');
-                var default_flatten_folders = $('#flatten_folders').prop('checked');
+                var indexerId = $(this).data('indexer_id');
+                var showName = $(this).data('show_name');
+                var defaultStatus = $('#statusSelect').val();
+                var qualityPreset = $('#qualityPreset').val();
+                var anyQualities = anyQualArray.join(',');
+                var bestQualities = bestQualArray.join(',');
+                var defaultFlattenFolders = $('#flatten_folders').prop('checked');
                 var subtitles = $('#subtitles').prop('checked');
                 var anime = $('#anime').prop('checked');
                 var scene = $('#scene').prop('checked');
-                var default_status_after = $('#statusSelectAfter').val();
-                
+                var defaultStatusAfter = $('#statusSelectAfter').val();
+
                 // If we are going to add an anime, let's by default configure it as one
-                if ( !configure_show_options && $(this).data("isanime") ) { 
-                	anime = true;
-                	configure_show_options = true;
+                if (!configureShowOptions && $(this).data("isanime")) {
+                    anime = true;
+                    configureShowOptions = true;
                 }
-                
+
                 $.get(url, {
-                	root_dir: root_dir,
-                	configure_show_options: configure_show_options,
-                	indexer: indexer,
-                	indexer_id: indexer_id,
-                	show_name: show_name,
-                	quality_preset: quality_preset,
-                	default_status: default_status,
-                	any_qualities: any_qualities,
-                	best_qualities: best_qualities,
-                	default_flatten_folders: default_flatten_folders,
-		            subtitles: subtitles,
-		            anime: anime,
-		            scene: scene,
-		            default_status_after: default_status_after,
+                    'root_dir': rootDirectory,
+                    'configure_show_options': configureShowOptions,
+                    'indexer': indexer,
+                    'indexer_id': indexerId,
+                    'show_name': showName,
+                    'quality_preset': qualityPreset,
+                    'default_status': defaultStatus,
+                    'any_qualities': anyQualities,
+                    'best_qualities': bestQualities,
+                    'default_flatten_folders': defaultFlattenFolders,
+                    'subtitles': subtitles,
+                    'anime': anime,
+                    'scene': scene,
+                    'default_status_after': defaultStatusAfter,
                 });
-                /*jshint camelcase: true */
                 return false;
             });
-			
-			$('#saveDefaultsButton').click(function () {
-		        var anyQualArray = [];
-		        var bestQualArray = [];
-		        $('#anyQualities option:selected').each(function (i, d) {
-		            anyQualArray.push($(d).val());
-		        });
-		        $('#bestQualities option:selected').each(function (i, d) {
-		            bestQualArray.push($(d).val());
-		        });
 
-		        $.get(srRoot + '/config/general/saveAddShowDefaults', {
-		            defaultStatus: $('#statusSelect').val(),
-		            anyQualities: anyQualArray.join(','),
-		            bestQualities: bestQualArray.join(','),
-		            defaultFlattenFolders: $('#flatten_folders').prop('checked'),
-		            subtitles: $('#subtitles').prop('checked'),
-		            anime: $('#anime').prop('checked'),
-		            scene: $('#scene').prop('checked'),
-		            defaultStatusAfter: $('#statusSelectAfter').val(),
-		        });
+            $('#saveDefaultsButton').click(function () {
+                var anyQualArray = [];
+                var bestQualArray = [];
+                $('#anyQualities option:selected').each(function (i, d) {
+                    anyQualArray.push($(d).val());
+                });
+                $('#bestQualities option:selected').each(function (i, d) {
+                    bestQualArray.push($(d).val());
+                });
 
-		        $(this).attr('disabled', true);
-		        new PNotify({
-		            title: 'Saved Defaults',
-		            text: 'Your "add show" defaults have been set to your current selections.',
-		            shadow: false
-		        });
-		    });
+                $.get(srRoot + '/config/general/saveAddShowDefaults', {
+                    defaultStatus: $('#statusSelect').val(),
+                    anyQualities: anyQualArray.join(','),
+                    bestQualities: bestQualArray.join(','),
+                    defaultFlattenFolders: $('#flatten_folders').prop('checked'),
+                    subtitles: $('#subtitles').prop('checked'),
+                    anime: $('#anime').prop('checked'),
+                    scene: $('#scene').prop('checked'),
+                    defaultStatusAfter: $('#statusSelectAfter').val(),
+                });
 
-		    $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter').change(function () {
-		        $('#saveDefaultsButton').attr('disabled', false);
-		    });
+                $(this).attr('disabled', true);
+                new PNotify({
+                    title: 'Saved Defaults',
+                    text: 'Your "add show" defaults have been set to your current selections.',
+                    shadow: false
+                });
+            });
 
-		    $('#qualityPreset').on('change', function() {
-		        //fix issue #181 - force re-render to correct the height of the outer div
-		        $('span.prev').click();
-		        $('span.next').click();
-		    });
-			
+            $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter').on('change', function() {
+                $('#saveDefaultsButton').attr('disabled', false);
+            });
+
+            $('#qualityPreset').on('change', function() {
+                //fix issue #181 - force re-render to correct the height of the outer div
+                $('span.prev').click();
+                $('span.next').click();
+            });
+
         }
     }
 };
