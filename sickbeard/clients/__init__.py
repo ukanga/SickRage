@@ -18,6 +18,7 @@
 # along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 __all__ = [
+    'putio',
     'utorrent',
     'transmission',
     'deluge',
@@ -29,6 +30,7 @@ __all__ = [
 ]
 
 default_host = {
+    'putio': 'http://put.io',
     'utorrent': 'http://localhost:8000',
     'transmission': 'http://localhost:9091',
     'deluge': 'http://localhost:8112',

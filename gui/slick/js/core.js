@@ -1630,6 +1630,20 @@ var SICKRAGE = {
                         $('#torrent_label_anime_option').hide();
                         $('#torrent_rpcurl_option').show();
                         $('#host_desc_torrent').text('URL to your Transmission client (e.g. http://localhost:9091)');
+                    } else if (selectedProvider.toLowerCase() === 'putio'){
+                        client = 'Putio';
+                        password = ' API Token';
+                        $('#torrent_verify_cert_option').hide();
+                        $('#torrent_verify_deluge').hide();
+                        $('#torrent_verify_rtorrent').hide();
+                        $('#label_warning_deluge').hide();
+                        $('#label_anime_warning_deluge').hide();
+                        $('#torrent_username_option').hide();
+                        $('#torrent_username').prop('value', '');
+                        $('#host_desc_torrent').text('');
+                        $('#torrent_label_option').hide();
+                        $('#torrent_label_anime_option').hide();
+                        $('#torrent_paused_option').hide();
                     } else if (selectedProvider.toLowerCase() === 'deluge'){
                         client = 'Deluge';
                         $('#torrent_verify_cert_option').show();
